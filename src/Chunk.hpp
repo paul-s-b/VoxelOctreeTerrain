@@ -1,8 +1,17 @@
-#pragma once
+#ifndef CHUNK_H_
+#define CHUNK_H_
+
 #include "ShadingProgram.hpp"
 #include "FreeCamera.hpp"
-#include "util_inc.hpp"
+#include "Texture.hpp"
 #include "CLW.h"
+#include "AABB.h"
+#include <stdlib.h>
+#include <math.h>
+#include <cstdlib>
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <ext.hpp>
 
 //change uint8_t to uint16_t if number of blocks in enum exceeds 255
 enum BLOCK : uint8_t { FILLED, AIR };
@@ -13,9 +22,7 @@ const cl_int chunkSize = 64;
 // 3D array i is arbitrary size 96 x 96 x 96
 // allows for LOD up to level 16
 
-class Chunk
-{
-
+class Chunk {
 protected:
 	static constexpr const char* _vertexPath = "src/shaders/voxel.vert";
 	static constexpr const char* _fragPath = "src/shaders/voxel.frag";
@@ -71,29 +78,30 @@ public:
 
 	// contains no OpenGL calls and so can be called on any thread
 	Chunk(glm::ivec3 pos, cl_int LOD);
-	Chunk::~Chunk();
-	explicit Chunk(int _castValue) : _castValue{ _castValue }, _aabb( {0, 0, 0} ){};
+	explicit Chunk(int _castValue) : _castValue{ _castValue }, _aabb({ 0, 0, 0 }){};
 
 	// call this method to initialize shading program and potentially
 	// other things in future
-	static void Init();
+	static void init();
 
 	// the stuff that should have been in the constructor but contained
 	// OpenGL functions and so didn't allow creation of Chunk object in
 	// seperate threads. Call Load() only in the main thread.
-	void Load();
+	void load();
 
 	// must be called on main thread.
-	void Unload();
+	void unload();
 
 	// returns the position of the chunk
-	glm::ivec3 Pos();
+	glm::ivec3 pos() const;
 	// returns the level of detail
-	cl_int LOD();
-	AABB GetAABB();
+	cl_int lod() const;
+	AABB getAABB() const;
 
 	// render vector of chunks
-	static void Render(const CameraData& cam_data, const std::vector<Chunk*>& chunks);
+	static void render(const CameraData& cam_data, const std::vector<Chunk*>& chunks);
 
 };
 
+
+#endif // CHUNK_H_

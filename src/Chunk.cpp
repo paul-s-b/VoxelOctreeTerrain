@@ -1,10 +1,4 @@
 #include "Chunk.hpp"
-#include "Texture.hpp"
-#include <stdlib.h>
-#include <math.h>
-#include "DebugTimer.h"
-#include <cstdlib>
-#include "AABB.h"
 
 ShadingProgram* Chunk::_program;
 GLuint Chunk::_perspectiveID;
@@ -17,8 +11,7 @@ GLuint Chunk::_camposID;
 #define GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT 0x84FF
 
 Chunk::Chunk(glm::ivec3 pos, cl_int LOD) 
-	: _nrOfIndices(0), _pos(pos), _LOD(LOD), _aabb( {chunkSize * LOD, chunkSize * LOD, chunkSize * LOD } )
-{
+	: _nrOfIndices(0), _pos(pos), _LOD(LOD), _aabb( {chunkSize * LOD, chunkSize * LOD, chunkSize * LOD } ) {
 	_aabb.update({ (pos.x - (LOD / 2.0)) * chunkSize,
 				   (pos.y - (LOD / 2.0)) * chunkSize,
 				   (pos.z - (LOD / 2.0)) * chunkSize });
@@ -42,21 +35,14 @@ Chunk::Chunk(glm::ivec3 pos, cl_int LOD)
 	//delete[]indices;
 }
 
-Chunk::~Chunk()
-{
-	
-}
-
-void Chunk::Unload()
-{
+void Chunk::unload() {
 	glDeleteBuffers(1, &_trianglesID);
 	glDeleteBuffers(1, &_normalsID);
 	glDeleteBuffers(1, &_IndiceID);
 	glDeleteVertexArrays(1, &_VAO);
 }
 
-void Chunk::Init()
-{
+void Chunk::init() {
 	_program = new ShadingProgram(_vertexPath, _fragPath);
 	_perspectiveID = glGetUniformLocation(_program->ID(), "perspective");
 	_lookAtID = glGetUniformLocation(_program->ID(), "lookAt");
@@ -65,14 +51,12 @@ void Chunk::Init()
 	_camposID = glGetUniformLocation(_program->ID(), "campos");
 }
 
-void Chunk::Load()
-{
+void Chunk::load() {
 	_loadArrayBuffers();
 	_makeVAO();
 }
 
-void Chunk::_loadArrayBuffers()
-{
+void Chunk::_loadArrayBuffers() {
 	glGenVertexArrays(1, &_VAO);
 	glBindVertexArray(_VAO);
 
@@ -101,9 +85,7 @@ void Chunk::_loadArrayBuffers()
 
 }
 
-void Chunk::_makeVAO()
-{
-
+void Chunk::_makeVAO() {
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, _trianglesID);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -115,8 +97,7 @@ void Chunk::_makeVAO()
 	glBindVertexArray(0);
 }
 
-void Chunk::_addRectangle(glm::vec3 center, glm::vec3 height, glm::vec3 width)
-{
+void Chunk::_addRectangle(glm::vec3 center, glm::vec3 height, glm::vec3 width) {
 	glm::vec3 corner1 = center - (height / 2.0) - (width / 2.0);
 	glm::vec3 corner2 = center - (height / 2.0) + (width / 2.0);
 	glm::vec3 corner3 = center + (height / 2.0) + (width / 2.0);
@@ -145,8 +126,7 @@ void Chunk::_addRectangle(glm::vec3 center, glm::vec3 height, glm::vec3 width)
 
 }
 
-void Chunk::_createMesh(glm::ivec3 pos, int landmap_flags[68 * 68 * 68], cl_int LOD)
-{
+void Chunk::_createMesh(glm::ivec3 pos, int landmap_flags[68 * 68 * 68], cl_int LOD) {
 	std::byte* faces = new std::byte[chunkSize * chunkSize * chunkSize];
 
 	int index = 0;
@@ -259,25 +239,21 @@ void Chunk::_createMesh(glm::ivec3 pos, int landmap_flags[68 * 68 * 68], cl_int 
 	delete[]faces;
 }
 
-glm::ivec3 Chunk::Pos()
-{
+glm::ivec3 Chunk::pos() const {
 	return _pos;
 }
 
-cl_int Chunk::LOD()
-{
+cl_int Chunk::lod() const {
 	return _LOD;
 }
 
-AABB Chunk::GetAABB()
-{
+AABB Chunk::getAABB() const {
 	return _aabb;
 }
 
-void Chunk::Render(const CameraData& cam_data, const std::vector<Chunk*>& chunks)
-{
+void Chunk::render(const CameraData& cam_data, const std::vector<Chunk*>& chunks) {
 
-	_program->Use();
+	_program->use();
 
 	glEnable(GL_CULL_FACE);
 	glFrontFace(GL_CW);

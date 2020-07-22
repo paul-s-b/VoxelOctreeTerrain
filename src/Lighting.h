@@ -1,15 +1,16 @@
-#pragma once
+#ifndef LIGHTING_H_
+#define LIGHTING_H_
+
 #include <glm.hpp>
 
-class Light
-{
+class Light {
 
 public:
-	Light(glm::vec3 ambient,
-          glm::vec3 diffuse,
-          glm::vec3 specular, 
-          glm::vec3 color);
-	~Light();
+    Light(glm::vec3 ambient,
+        glm::vec3 diffuse,
+        glm::vec3 specular,
+        glm::vec3 color);
+    ~Light();
 
     glm::vec3 ambient;
     glm::vec3 diffuse;
@@ -18,19 +19,18 @@ public:
 
 };
 
-class PointLight : public Light
-{
+class PointLight : public Light {
 
 public:
-	PointLight(glm::vec3 ambient, 
-               glm::vec3 diffuse, 
-               glm::vec3 specular, 
-               glm::vec3 color,
-               glm::vec3 position,
-               float constant = 1.0,
-               float linear = 0.09,
-               float quadratic = 0.032);
-	~PointLight();
+    PointLight(glm::vec3 ambient,
+        glm::vec3 diffuse,
+        glm::vec3 specular,
+        glm::vec3 color,
+        glm::vec3 position,
+        float constant = 1.0,
+        float linear = 0.09,
+        float quadratic = 0.032);
+    ~PointLight();
 
     glm::vec3 position;
     float constant;
@@ -39,17 +39,18 @@ public:
 
 };
 
-class DirLight : public Light
-{
+class DirLight : public Light {
 
 public:
-	DirLight(glm::vec3 ambient, 
-             glm::vec3 diffuse, 
-             glm::vec3 specular, 
-             glm::vec3 color,
-             glm::vec3 direction);
-	~DirLight();
+    DirLight(glm::vec3 ambient,
+        glm::vec3 diffuse,
+        glm::vec3 specular,
+        glm::vec3 color,
+        glm::vec3 direction);
+    ~DirLight();
 
     glm::vec3 direction;
 
 };
+
+#endif // LIGHTING_H_

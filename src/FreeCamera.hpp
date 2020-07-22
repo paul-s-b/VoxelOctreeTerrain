@@ -1,11 +1,10 @@
-#pragma once
+#ifndef FREECAMERA_H_
+#define FREECAMERA_H_
 
-#include "util_inc.hpp"
 #include "Window.hpp"
 #include "Frustum.h"
 
-struct	CameraData
-{
+struct	CameraData {
 	glm::mat4 view;
 	glm::mat4 projection;
 	glm::mat4 VP;
@@ -13,8 +12,7 @@ struct	CameraData
 	glm::vec3 direction;
 };
 
-class	FreeCamera
-{
+class	FreeCamera {
 	static glm::vec3 const _forward;
 
 	Window& _window;
@@ -30,11 +28,13 @@ class	FreeCamera
 	Frustum _frustum;
 	CameraData _data;
 
-	void	updateView(void); 
+	void _updateView(void);
 
 public:
 	const Frustum& getFrustum() const noexcept;
-	FreeCamera(Window& window, double yaw=0.0, double pitch=0.0);
-	void	Update(double dt);
-	const	CameraData& GetCameraData(void);
+	FreeCamera(Window& window, double yaw = 0.0, double pitch = 0.0);
+	void update(double dt);
+	const CameraData& getCameraData(void);
 };
+
+#endif // FREECAMERA_H_

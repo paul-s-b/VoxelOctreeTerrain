@@ -1,16 +1,16 @@
-#pragma once
+#ifndef DEGUBTIMER_H_
+#define DEBUGTIMER_H_
+
 #include <chrono>
 #include <thread>
 #include <iostream>
 
-class DebugTimer
-{
-private:
+class DebugTimer {
 public:
 
 	std::chrono::time_point<std::chrono::steady_clock> start, end;
 	std::chrono::duration<float> duration;
-	
+
 	DebugTimer()
 	{
 		start = std::chrono::high_resolution_clock::now();
@@ -26,3 +26,4 @@ public:
 
 };
 
+#endif // DEGUBTIMER_H_

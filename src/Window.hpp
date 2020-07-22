@@ -1,11 +1,19 @@
-#pragma once
+#ifndef WINDOW_H_
+#define WINDOW_H_
 
-#include "util_inc.hpp"
+#define GLM_ENABLE_EXPERIMENTAL
+#define GLFW_INCLUDE_GLCOREARB
 
-void	KeyCallback(GLFWwindow*, int key, int, int action, int);
-void	MouseButtonCallback(GLFWwindow*, int button, int action, int);
-void	MousePositionCallback(GLFWwindow*, double x, double y);
-void	WindowResizeCallback(GLFWwindow*, int width, int height);
+#include <glew.h>
+#include <glfw3.h>
+#include <iostream>
+#include <glm.hpp>
+#include <stdexcept>
+
+void keyCallback(GLFWwindow*, int key, int, int action, int);
+void mouseButtonCallback(GLFWwindow*, int button, int action, int);
+void mousePositionCallback(GLFWwindow*, double x, double y);
+void windowResizeCallback(GLFWwindow*, int width, int height);
 
 //! Application window
 /*!
@@ -14,14 +22,13 @@ and the ability to specify a subsection that application window
 for rendering.
 All coordinates are in normalized device coordinates.
 */
-class	Window
-{
-	friend void	KeyCallback(GLFWwindow*, int key, int, int action, int);
-	friend void	MouseButtonCallback(GLFWwindow*, int button, int action, int);
-	friend void	MousePositionCallback(GLFWwindow*, double x, double y);
-	friend void	WindowResizeCallback(GLFWwindow*, int width, int hieght);
-	static void	ErrorCallback(int, const char*);
-	static void	WindowMoveCallback(GLFWwindow*, int, int);
+class Window {
+	friend void	keyCallback(GLFWwindow*, int key, int, int action, int);
+	friend void	mouseButtonCallback(GLFWwindow*, int button, int action, int);
+	friend void	mousePositionCallback(GLFWwindow*, double x, double y);
+	friend void	windowResizeCallback(GLFWwindow*, int width, int hieght);
+	static void	errorCallback(int, const char*);
+	static void	windowMoveCallback(GLFWwindow*, int, int);
 	GLFWwindow* _window;
 
 	float _screenCornerX;
@@ -31,17 +38,17 @@ class	Window
 	int _windowWidth;
 	int _windowHeight;
 
-	void	WindowHints(void);
-	void	RefreshRenderMask(void);
+	void windowHints(void);
+	void refreshRenderMask(void);
 
 	//! Array of bools indicating if a key is down.
-	bool _keys[512] = {false};
+	bool _keys[512] = { false };
 
 	//! Array of bools indicating if a mouse button is pressed.
-	bool _mouseButtons[8] = {false};
+	bool _mouseButtons[8] = { false };
 
 	//! Array of bools indicating if mouse button was clicked
-	bool _mouseButtonClicked[8] = {false};
+	bool _mouseButtonClicked[8] = { false };
 
 	glm::vec2 _mousePosition = glm::vec2(0.0f, 0.0f);
 public:
@@ -50,19 +57,19 @@ public:
 	Window(int x, int y, std::string name);
 
 	//! Size of the framebuffer in pixels, ignores RenderMask
-	void	GetMaxRenderSize(float &width, float &height);
+	void getMaxRenderSize(float& width, float& height);
 
 	//! Size of the OS Application window in pixels.
-	void	GetWindowSize(int &width, int &height);
+	void getWindowSize(int& width, int& height);
 
 	//! Gets the aspect ratio of the currently drawable area.
-	float	GetAspect(void);
+	float getAspect(void);
 
 	//! Should window close?
-	bool	ShouldClose(void);
+	bool shouldClose(void);
 
 	//! Closes the window.
-	void	Close(void);
+	void close(void);
 
 
 	//! Set a rendering stencil.
@@ -71,35 +78,38 @@ public:
 	its lower left corner at that point.
 	Implemented with glStencil.
 	*/
-	void	SetRenderMask(float x, float y, float width, float height);
+	void setRenderMask(float x, float y, float width, float height);
 
 	//! Removes render stencil.
-	void	RemoveRenderMask(void);
+	void removeRenderMask(void);
 
 	//! Get the current drawable area, value depends on the current stencil
-	void	GetSize(float &width, float &height);
+	void getSize(float& width, float& height);
 
 	//! Make window fullscreen.
-	void	Fullscreen(void);
+	void fullscreen(void);
 
 	//! Clears render zone with the current glClearColor.
-	void	Clear(void);
+	void clear(void);
 
 	//! Renders entire window, call once per frame.
-	void	Render(void);
+	void render(void);
 
 	//! Check if a key is down.
-	bool	Key(int key);
+	bool key(int key);
 
 	//! Check if a mouse button is pressed.
-	bool	MouseButton(int button);
+	bool mouseButton(int button);
 
 	//! Check if mouse button was clicked.
-	bool	MouseClick(int button);
+	bool mouseClick(int button);
 
 	//! Get the current mouse position.
-	const glm::vec2& MousePos(void);
+	const glm::vec2& mousePos(void);
 
 	//! Returns the pointer to the internal GLFW window.
-	GLFWwindow* GetGLWindow(void);
+	GLFWwindow* getGLWindow(void);
 };
+
+
+#endif // !WINDOW_H_

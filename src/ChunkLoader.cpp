@@ -1,7 +1,6 @@
 #include "ChunkLoader.hpp"
 
-ChunkLoader::ChunkLoader()
-{
+ChunkLoader::ChunkLoader() {
 	for (size_t i = 0; i < 4; i++)
 	{
 		_futures[i] = _promises[i].get_future();
@@ -10,22 +9,19 @@ ChunkLoader::ChunkLoader()
 	}
 }
 
-ChunkLoader::~ChunkLoader(void)
-{
-	Clear();
+ChunkLoader::~ChunkLoader(void) {
+	clear();
 	for (size_t i = 0; i < 4; i++)
 		_promises[i].set_value();
 	for (size_t i = 0; i < 4; i++)
 		_threads[i]->join();
 }
 
-static std::tuple<int, int, int> map_key(const glm::ivec3& pos)
-{
+static std::tuple<int, int, int> map_key(const glm::ivec3& pos) {
 	return std::make_tuple(pos.x, pos.y, pos.z);
 }
 
-void	ChunkLoader::_chunkCreator(size_t threadNum)
-{
+void	ChunkLoader::_chunkCreator(size_t threadNum) {
 	while (_futures[threadNum].wait_for(std::chrono::milliseconds(1)) == std::future_status::timeout)
 	{
 		_mutex[0].lock();
@@ -52,15 +48,13 @@ void	ChunkLoader::_chunkCreator(size_t threadNum)
 	}
 }
 
-void	ChunkLoader::Add(const glm::ivec3& pos, const int& LOD)
-{
+void	ChunkLoader::add(const glm::ivec3& pos, const int& LOD) {
 	_mutex[0].lock();
 	_waitingChunks.push({ pos, LOD });
 	_mutex[0].unlock();
 }
 
-Chunk	*ChunkLoader::Get(const glm::ivec3& pos)
-{
+Chunk	*ChunkLoader::get(const glm::ivec3& pos) {
 	//std::cout << _loadedChunks.count(map_key(pos));
 	_mutex[1].lock();
 	if (_loadedChunks.count(map_key(pos)) == 0)
@@ -74,8 +68,7 @@ Chunk	*ChunkLoader::Get(const glm::ivec3& pos)
 	return c;
 }
 
-void	ChunkLoader::Clear(void)
-{
+void	ChunkLoader::clear(void) {
 	_mutex[1].lock();
 	for (auto const& p : _loadedChunks)
 		_chunksToFree.push_back(p.second);
@@ -86,8 +79,7 @@ void	ChunkLoader::Clear(void)
 	_mutex[1].unlock();
 }
 
-void	ChunkLoader::DeleteDeadChunks(void)
-{
+void	ChunkLoader::deleteDeadChunks(void) {
 	_mutex[1].lock();
 	if (_chunksToFree.empty())
 	{
@@ -95,14 +87,13 @@ void	ChunkLoader::DeleteDeadChunks(void)
 		return;
 	}
 	Chunk* c = _chunksToFree.front();
-	c->Unload();
+	c->unload();
 	delete c;
 
 	_chunksToFree.pop_front();
 	_mutex[1].unlock();
 }
 
-int ChunkLoader::getChunkLoaderSize() const
-{
+int ChunkLoader::getChunkLoaderSize() const {
 	return _waitingChunks.size();
 }

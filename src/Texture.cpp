@@ -2,8 +2,7 @@
 
 std::map<std::string, Texture::TextureInfo> Texture::_cache;
 
-Texture::Texture(std::string filepath)
-{
+Texture::Texture(std::string filepath) {
 	if (_cache.count(filepath) != 0)
 	{
 		TextureInfo info = _cache[filepath];
@@ -39,17 +38,14 @@ Texture::Texture(std::string filepath)
 	}
 }
 
-unsigned Texture::Width(void)
-{
+unsigned Texture::width(void) const {
 	return _width;
 }
 
-unsigned Texture::Height(void)
-{
+unsigned Texture::height(void) const {
 	return _height;
 }
 
-uint8_t* Texture::Data(void)
-{
+uint8_t* Texture::data(void) const {
 	return _imageData->data();
 }

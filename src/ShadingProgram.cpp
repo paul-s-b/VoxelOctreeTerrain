@@ -1,34 +1,32 @@
 #include "ShadingProgram.hpp"
 
-ShadingProgram::ShadingProgram(std::string vp, std::string fp)
-{
+ShadingProgram::ShadingProgram(std::string vp, std::string fp) {
 	std::string shader;
 	GLuint shader_id;
 	const GLchar *source;
 
 	_program = glCreateProgram();
 
-	shader = GetShaderCode(vp);
+	shader = _getShaderCode(vp);
 	shader_id = glCreateShader(GL_VERTEX_SHADER);
 	source = shader.c_str();
 	glShaderSource(shader_id, 1, &source, nullptr);
 	glCompileShader(shader_id);
-	CheckCompilation(shader_id, vp);
+	_checkCompilation(shader_id, vp);
 	glAttachShader(_program, shader_id);
 
-	shader = GetShaderCode(fp);
+	shader = _getShaderCode(fp);
 	shader_id = glCreateShader(GL_FRAGMENT_SHADER);
 	source = shader.c_str();
 	glShaderSource(shader_id, 1, &source, nullptr);
 	glCompileShader(shader_id);
-	CheckCompilation(shader_id, fp);
+	_checkCompilation(shader_id, fp);
 	glAttachShader(_program, shader_id);
 	glLinkProgram(_program);
-	CheckLinking();
+	_checkLinking();
 }
 
-std::string	ShadingProgram::GetShaderCode(std::string filepath)
-{
+std::string	ShadingProgram::_getShaderCode(std::string filepath) {
 	std::ifstream fileStream(filepath);
 
 	if (fileStream.fail() || !fileStream.good())
@@ -40,8 +38,7 @@ std::string	ShadingProgram::GetShaderCode(std::string filepath)
 	return buf.str();
 }
 
-void	ShadingProgram::CheckCompilation(GLuint id, std::string path)
-{
+void ShadingProgram::_checkCompilation(GLuint id, std::string path) {
 	GLint success = 0;
 	GLint logsize;
 
@@ -60,8 +57,7 @@ void	ShadingProgram::CheckCompilation(GLuint id, std::string path)
 	}
 }
 
-void	ShadingProgram::CheckLinking(void)
-{
+void ShadingProgram::_checkLinking(void) {
 	GLint success = 0;
 	GLint logsize;
 
@@ -78,12 +74,10 @@ void	ShadingProgram::CheckLinking(void)
 	}
 }
 
-void	ShadingProgram::Use(void)
-{
+void ShadingProgram::use(void) {
 	glUseProgram(_program);
 }
 
-GLuint	ShadingProgram::ID(void)
-{
+GLuint ShadingProgram::ID(void) {
 	return _program;
 }

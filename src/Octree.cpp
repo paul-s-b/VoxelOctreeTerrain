@@ -9,21 +9,18 @@ Octree::Octree(const glm::ivec3& _origin, const glm::vec3& _halfDimension)
 		_children[i] = NULL;
 }
 
-Octree& Octree::operator=(const Octree& oct)
-{
+Octree& Octree::operator=(const Octree& oct) {
 	_origin = oct.getOrigin();
 	_halfDimension = oct.getHalfDimension();
 
 	return *this;
 }
 
-bool operator==(const Octree& o1, const Octree& o2)
-{
+bool operator==(const Octree& o1, const Octree& o2) {
 	return (o1._origin == o2._origin && o1._halfDimension == o2._halfDimension);
 }
 
-bool operator!=(const Octree& o1, const Octree& o2)
-{
+bool operator!=(const Octree& o1, const Octree& o2) {
 	return !(o1 == o2);
 }
 
@@ -41,8 +38,7 @@ Octree::~Octree() {
 		delete _children[i];
 }
 
-double Octree::getDistanceToNode(const glm::vec3& p)
-{
+double Octree::getDistanceToNode(const glm::vec3& p) {
 	return sqrt(((p.x - _origin.x) * (p.x - _origin.x)) +
 				((p.y - _origin.y) * (p.y - _origin.y)) +
 				((p.z - _origin.z) * (p.z - _origin.z)));
@@ -54,13 +50,11 @@ glm::ivec3 Octree::getOrigin() const
 	return _origin;
 }
 
-glm::vec3 Octree::getHalfDimension() const
-{
+glm::vec3 Octree::getHalfDimension() const {
 	return _halfDimension;
 }
 
-int Octree::getHalfSize() const
-{
+int Octree::getHalfSize() const {
 	return _halfDimension.x * 2;
 }
 

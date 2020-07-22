@@ -1,19 +1,29 @@
-#pragma once
+#ifndef SHADINGPROGRAM_H_
+#define SHADINGPROGRAM_H_
 
-#include "util_inc.hpp"
+#include <glew.h>
+#include <glfw3.h>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
 
-class	ShadingProgram
-{
+class ShadingProgram {
 private:
 
 	GLuint _program;
 
-	std::string	GetShaderCode(std::string filepath);
-	void	CheckCompilation(GLuint, std::string filepath);
-	void	CheckLinking(void);
+	std::string	_getShaderCode(std::string filepath);
+	void _checkCompilation(GLuint, std::string filepath);
+	void _checkLinking(void);
 
 public:
 	ShadingProgram(std::string vertexPath, std::string fragPath);
-	void	Use(void);
-	GLuint	ID(void);
+	void use(void);
+	GLuint ID(void);
 };
+
+
+#endif // SHADINGPROGRAM_H_
+
+

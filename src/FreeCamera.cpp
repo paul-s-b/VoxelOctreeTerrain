@@ -3,8 +3,7 @@
 #include "FreeCamera.hpp"
 #include "Landscape.hpp"
 
-FreeCamera::FreeCamera(Window& window, double yaw, double pitch) : _window(window)
-{
+FreeCamera::FreeCamera(Window& window, double yaw, double pitch) : _window(window) {
 	_data.position = glm::vec3(0, 0, 0);
 	_data.direction = glm::vec3(0, 0, -1);
 	_aspect = 1.0;
@@ -14,19 +13,17 @@ FreeCamera::FreeCamera(Window& window, double yaw, double pitch) : _window(windo
 	_yaw = yaw;
 	_pitch = pitch;
 	
-	updateView();
+	_updateView();
 	_data.projection = glm::perspective(glm::radians(_fov), _aspect, _near, _far);
 	_data.VP = _data.projection * _data.view;
-	_mouse_pos_old = _window.MousePos();
+	_mouse_pos_old = _window.mousePos();
 }
 
-const Frustum& FreeCamera::getFrustum() const noexcept
-{
+const Frustum& FreeCamera::getFrustum() const noexcept {
 	return _frustum;
 }
 
-void	FreeCamera::updateView(void)
-{
+void FreeCamera::_updateView(void) {
 	bool constrainPitch = true;
 	if (constrainPitch)
 	{
@@ -61,46 +58,45 @@ void	FreeCamera::updateView(void)
 	);
 }
 
-void	FreeCamera::Update(double dt)
-{
+void FreeCamera::update(double dt) {
 	bool moved = false;
 
-	if (_aspect != _window.GetAspect())
+	if (_aspect != _window.getAspect())
 	{
-		_aspect = _window.GetAspect();
+		_aspect = _window.getAspect();
 		_data.projection = glm::perspective(glm::radians(_fov), _aspect, _near, _far);
 	}
 	float speed = 100.0f;
-	if (_window.Key(' '))
+	if (_window.key(' '))
 		speed *= 10.0f;
-	if (_window.Key('C'))
+	if (_window.key('C'))
 		speed *= 40.0f;
-	if (_window.Key('W'))
+	if (_window.key('W'))
 	{
 		_data.position += _data.direction * dt * speed;
 		moved = true;
 	}
-	if (_window.Key('S'))
+	if (_window.key('S'))
 	{
 		_data.position -= _data.direction * dt * speed;
 		moved = true;
 	}
-	if (_window.Key('A'))
+	if (_window.key('A'))
 	{
 		_data.position -= glm::cross(_data.direction, _up) * dt * speed;
 		moved = true;
 	}
-	if (_window.Key('D'))
+	if (_window.key('D'))
 	{
 		_data.position += glm::cross(_data.direction, _up) * dt * speed;
 		moved = true;
 	}
-	if (_window.Key('Z'))
+	if (_window.key('Z'))
 	{
 		_data.position += _up * dt * speed;
 		moved = true;
 	}
-	if (_window.Key('X'))
+	if (_window.key('X'))
 	{
 		_data.position -= _up * dt * speed;
 		moved = true;
@@ -109,34 +105,33 @@ void	FreeCamera::Update(double dt)
 	//if (_window.MouseClick(GLFW_MOUSE_BUTTON_LEFT))
 	//	//LandscapeManager::CastRay(_data);
 
-	if (_window.Key('1'))
+	if (_window.key('1'))
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	}
-	if (_window.Key('2'))
+	if (_window.key('2'))
 	{
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	}
 
-	if (_window.MousePos() != _mouse_pos_old)
+	if (_window.mousePos() != _mouse_pos_old)
 	{
-		glm::vec2 mouse_delta = _mouse_pos_old - _window.MousePos();
+		glm::vec2 mouse_delta = _mouse_pos_old - _window.mousePos();
 		_yaw += mouse_delta.x * 1; //mouse movement speed
 		_pitch -= mouse_delta.y * 1; //mouse movement speed
 
-		_mouse_pos_old = _window.MousePos();
+		_mouse_pos_old = _window.mousePos();
 		moved = true;
 	}
 
 	if (moved)
 	{
-		updateView();
+		_updateView();
 		_data.VP = _data.projection * _data.view;
 	}
 	_frustum.update(_data.VP);
 }
 
-const CameraData& FreeCamera::GetCameraData(void)
-{
+const CameraData& FreeCamera::getCameraData(void) {
 	return _data;
 }

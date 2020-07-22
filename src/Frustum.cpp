@@ -1,7 +1,6 @@
 #include "Frustum.h"
 
-namespace Planes
-{
+namespace Planes {
     enum
     {
         Near = 0,
@@ -13,51 +12,49 @@ namespace Planes
     };
 }
 
-float Plane::distanceToPoint(const glm::vec3& point) const noexcept
-{
+float Plane::distanceToPoint(const glm::vec3& point) const noexcept {
     return glm::dot(point, normal) + distance;
 }
 
 //calcuate matrix based on the projection * view matrix.
-void Frustum::update(const glm::mat4& mat) noexcept
-{
+void Frustum::update(const glm::mat4& mat) noexcept {
     // left
-    m_planes[Planes::Left].normal.x     = mat[0][3] + mat[0][0];
-    m_planes[Planes::Left].normal.y     = mat[1][3] + mat[1][0];
-    m_planes[Planes::Left].normal.z     = mat[2][3] + mat[2][0];
-    m_planes[Planes::Left].distance     = mat[3][3] + mat[3][0];
+    _planes[Planes::Left].normal.x     = mat[0][3] + mat[0][0];
+    _planes[Planes::Left].normal.y     = mat[1][3] + mat[1][0];
+    _planes[Planes::Left].normal.z     = mat[2][3] + mat[2][0];
+    _planes[Planes::Left].distance     = mat[3][3] + mat[3][0];
 
     // right
-    m_planes[Planes::Right].normal.x    = mat[0][3] - mat[0][0];
-    m_planes[Planes::Right].normal.y    = mat[1][3] - mat[1][0];
-    m_planes[Planes::Right].normal.z    = mat[2][3] - mat[2][0];
-    m_planes[Planes::Right].distance    = mat[3][3] - mat[3][0];
+    _planes[Planes::Right].normal.x    = mat[0][3] - mat[0][0];
+    _planes[Planes::Right].normal.y    = mat[1][3] - mat[1][0];
+    _planes[Planes::Right].normal.z    = mat[2][3] - mat[2][0];
+    _planes[Planes::Right].distance    = mat[3][3] - mat[3][0];
 
     // bottom
-    m_planes[Planes::Bottom].normal.x   = mat[0][3] + mat[0][1];
-    m_planes[Planes::Bottom].normal.y   = mat[1][3] + mat[1][1];
-    m_planes[Planes::Bottom].normal.z   = mat[2][3] + mat[2][1];
-    m_planes[Planes::Bottom].distance   = mat[3][3] + mat[3][1];
+    _planes[Planes::Bottom].normal.x   = mat[0][3] + mat[0][1];
+    _planes[Planes::Bottom].normal.y   = mat[1][3] + mat[1][1];
+    _planes[Planes::Bottom].normal.z   = mat[2][3] + mat[2][1];
+    _planes[Planes::Bottom].distance   = mat[3][3] + mat[3][1];
 
     // top
-    m_planes[Planes::Top].normal.x      = mat[0][3] - mat[0][1];
-    m_planes[Planes::Top].normal.y      = mat[1][3] - mat[1][1];
-    m_planes[Planes::Top].normal.z      = mat[2][3] - mat[2][1];
-    m_planes[Planes::Top].distance      = mat[3][3] - mat[3][1];
+    _planes[Planes::Top].normal.x      = mat[0][3] - mat[0][1];
+    _planes[Planes::Top].normal.y      = mat[1][3] - mat[1][1];
+    _planes[Planes::Top].normal.z      = mat[2][3] - mat[2][1];
+    _planes[Planes::Top].distance      = mat[3][3] - mat[3][1];
 
     // near
-    m_planes[Planes::Near].normal.x     = mat[0][3] + mat[0][2];
-    m_planes[Planes::Near].normal.y     = mat[1][3] + mat[1][2];
-    m_planes[Planes::Near].normal.z     = mat[2][3] + mat[2][2];
-    m_planes[Planes::Near].distance     = mat[3][3] + mat[3][2];
+    _planes[Planes::Near].normal.x     = mat[0][3] + mat[0][2];
+    _planes[Planes::Near].normal.y     = mat[1][3] + mat[1][2];
+    _planes[Planes::Near].normal.z     = mat[2][3] + mat[2][2];
+    _planes[Planes::Near].distance     = mat[3][3] + mat[3][2];
 
     // far
-    m_planes[Planes::Far].normal.x      = mat[0][3] - mat[0][2];
-    m_planes[Planes::Far].normal.y      = mat[1][3] - mat[1][2];
-    m_planes[Planes::Far].normal.z      = mat[2][3] - mat[2][2];
-    m_planes[Planes::Far].distance      = mat[3][3] - mat[3][2];
+    _planes[Planes::Far].normal.x      = mat[0][3] - mat[0][2];
+    _planes[Planes::Far].normal.y      = mat[1][3] - mat[1][2];
+    _planes[Planes::Far].normal.z      = mat[2][3] - mat[2][2];
+    _planes[Planes::Far].distance      = mat[3][3] - mat[3][2];
 
-    for (auto& plane : m_planes)
+    for (auto& plane : _planes)
     {
         float length = glm::length(plane.normal);
         plane.normal    /= length;
@@ -66,9 +63,8 @@ void Frustum::update(const glm::mat4& mat) noexcept
 }
 
 
-bool Frustum::pointInFrustum(const glm::vec3& point) const noexcept
-{
-    for (auto& plane : m_planes)
+bool Frustum::pointInFrustum(const glm::vec3& point) const noexcept {
+    for (auto& plane : _planes)
     {
         if (plane.distanceToPoint(point) < 0)
         {
@@ -79,11 +75,10 @@ bool Frustum::pointInFrustum(const glm::vec3& point) const noexcept
 }
 
 
-bool Frustum::boxInFrustum(const AABB& box) const noexcept
-{
+bool Frustum::boxInFrustum(const AABB& box) const noexcept {
     bool result = true;
 
-    for (auto& plane : m_planes)
+    for (auto& plane : _planes)
     {
         if (plane.distanceToPoint(box.getVP(plane.normal)) < 0)
         {

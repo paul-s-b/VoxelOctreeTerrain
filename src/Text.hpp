@@ -1,17 +1,17 @@
-#pragma once
+#ifndef TEXT_H_
+#define TEXT_H_
 
-#include "util_inc.hpp"
 #include "ShadingProgram.hpp"
 #include "Texture.hpp"
+#include <glm.hpp>
 
-class	Text
-{
+class Text {
 private:
 	static constexpr const char* _fontFile = "assets/textures/game_font.png";
 	static constexpr const char* _vertexPath = "src/shaders/text.vert";
-    static constexpr const char* _fragPath = "src/shaders/text.frag";
+	static constexpr const char* _fragPath = "src/shaders/text.frag";
 
-	static ShadingProgram *_program;
+	static ShadingProgram* _program;
 
 	std::string _message;
 
@@ -26,11 +26,13 @@ private:
 
 	static bool _init;
 
-	void	RenderChar(char c, glm::vec2 topleft, glm::vec2 botright);
+	void _renderChar(char c, glm::vec2 topleft, glm::vec2 botright);
 
 public:
 
 	Text(std::string message);
 
-	void	Render(float aspect);
+	void render(float aspect);
 };
+
+#endif // TEXT_H_

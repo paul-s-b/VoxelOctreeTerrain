@@ -12,7 +12,7 @@ int	main(void)
 	
 	Window window(1920, 1080, "Landscape");
 	glClearColor(0.2, 0.25, 0.3, 1);
-	CLW::Init();
+	CLW::init();
 
 	LandscapeManager landscape;
 	FPSDisplay fps;
@@ -27,23 +27,23 @@ int	main(void)
 		"assets/textures/skybox/back.png"
 	);
 	
-	Chunk::Init();
+	Chunk::init();
 
-	while (!window.ShouldClose())
+	while (!window.shouldClose())
 	{
 		//std::cout << cam.GetCameraData().position.x << " " << cam.GetCameraData().position.y << " " << cam.GetCameraData().position.z << "\n";
 
 		if ((err = glGetError()) != GL_NO_ERROR)
 			std::cerr << err << std::endl;
-		clock.Step();
-		window.Clear();
-		cam.Update(clock.Delta());
-		landscape.Render(cam.GetCameraData(), cam);
-		sky.Render(cam.GetCameraData());
-		fps.Render(window);
-		window.Render();
-		if (window.Key(GLFW_KEY_ESCAPE))
+		clock.step();
+		window.clear();
+		cam.update(clock.delta());
+		landscape.render(cam.getCameraData(), cam);
+		sky.render(cam.getCameraData());
+		fps.render(window);
+		window.render();
+		if (window.key(GLFW_KEY_ESCAPE))
 			break;
 	}
-	window.Close();
+	window.close();
 }

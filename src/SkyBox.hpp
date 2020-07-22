@@ -1,18 +1,19 @@
-#pragma once
+#ifndef SKYBOX_H_
+#define SKYBOX_H_
 
-#include "util_inc.hpp"
 #include "FreeCamera.hpp"
 #include "Texture.hpp"
 #include "ShadingProgram.hpp"
+#include <glm.hpp>
+#include <ext.hpp>
 
-class	SkyBox
-{
+class SkyBox {
 	static constexpr const char* _vertexPath = "src/shaders/skybox.vert";
 	static constexpr const char* _fragPath = "src/shaders/skybox.frag";
 
 	static const std::vector<float> _vertexArray;
 
-	ShadingProgram *_program;
+	ShadingProgram* _program;
 	GLuint _vertexArrayID;
 	GLuint _textureID;
 	GLuint _textureLocationID;
@@ -25,7 +26,10 @@ class	SkyBox
 
 public:
 	SkyBox(std::string right, std::string left, std::string top,
-		   std::string bot, std::string back, std::string front);
+		std::string bot, std::string back, std::string front);
 	~SkyBox(void);
-	void	Render(const CameraData& cam_data);
+	void render(const CameraData& cam_data);
 };
+
+
+#endif // SKYBOX_H_

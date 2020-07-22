@@ -1,23 +1,18 @@
 #include "CLW.h"
-#include <iostream>
-#include <vector>
 
 cl::Buffer CLW::buffer_landmap;
 cl::Kernel CLW::terrain_gen;
 cl::CommandQueue CLW::queue;
 
-CLW::CLW()
-{
+CLW::CLW() {
 
 }
 
-CLW::~CLW()
-{
+CLW::~CLW() {
 
 }
 
-void CLW::Init()
-{
+void CLW::init() {
     std::vector<cl::Platform> all_platforms;
 
     cl::Platform::get(&all_platforms);
@@ -877,8 +872,7 @@ void CLW::Init()
 void CLW::CLNoise(int landmap_flags[68 * 68 * 68],
                   cl_float3 pos, 
                   cl_int LOD, 
-                  cl_int chunkSize)
-{
+                  cl_int chunkSize) {
     const int n = 68 * 68 * 68;
 
     terrain_gen.setArg(0, buffer_landmap);
@@ -901,7 +895,6 @@ void CLW::CLMesh(int landmap_flags[68 * 68 * 68],
                  cl_float3 *normals, 
                  cl_float3 *indices,
                  cl_float _tex_atlas_width,
-                 cl_int *nrOfIndices)
-{
+                 cl_int *nrOfIndices) {
 
 }

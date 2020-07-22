@@ -1,4 +1,5 @@
-#pragma once
+#ifndef TEXTURE_H_
+#define TEXTURE_H_
 
 #include <cstring>
 #include <vector>
@@ -8,9 +9,7 @@
 #include <stdint.h>
 #include "lodepng.h"
 
-
-class	Texture
-{
+class Texture {
 private:
 
 	struct TextureInfo
@@ -21,16 +20,19 @@ private:
 	};
 
 	static std::map<std::string, TextureInfo> _cache;
-	std::vector<uint8_t> *_imageData;
+	std::vector<uint8_t>* _imageData;
 	unsigned _width;
 	unsigned _height;
-	
+
 public:
 
-	//! Only supports png currently
+	// Only supports png currently
 	Texture(std::string filepath);
 
-	unsigned Width(void);
-	unsigned Height(void);
-	uint8_t* Data(void);
+	unsigned width(void) const;
+	unsigned height(void) const;
+	uint8_t* data(void) const;
 };
+
+
+#endif // TEXTURE_H_

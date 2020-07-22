@@ -1,26 +1,23 @@
 #include "FPSDisplay.hpp"
 
-FPSDisplay::FPSDisplay()
-{
+FPSDisplay::FPSDisplay() {
 	_index = 0;
 	std::memset(_times, 0, sizeof(double) * 60);
 	_timer = 0;
 }
 
-FPSDisplay::~FPSDisplay()
-{
+FPSDisplay::~FPSDisplay() {
 	delete _text;
 }
 
-void	FPSDisplay::Render(Window& window)
-{
-	_clock.Step();
+void FPSDisplay::render(Window& window) {
+	_clock.step();
 
-	_times[_index] = _clock.Delta();
+	_times[_index] = _clock.delta();
 	_index += 1;
 	_index %= 60;
 
-	_timer += _clock.Delta();
+	_timer += _clock.delta();
 	if (_timer > 1)
 	{
 		double av = 0;
@@ -37,7 +34,7 @@ void	FPSDisplay::Render(Window& window)
 		delete _text;
 		_text = new Text(ss.str());
 	}
-	window.SetRenderMask(0, 0.975, 0.05, 0.025);
-	_text->Render(window.GetAspect());
-	window.RemoveRenderMask();
+	window.setRenderMask(0, 0.975, 0.05, 0.025);
+	_text->render(window.getAspect());
+	window.removeRenderMask();
 }

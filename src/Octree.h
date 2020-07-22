@@ -1,10 +1,10 @@
-#ifndef Octree_H
-#define Octree_H
+#ifndef OCTREE_H_
+#define OCTREE_H_
 
+#include "Chunk.hpp"
 #include <unordered_map>
 #include <glm.hpp>
 #include <gtx/hash.hpp>
-#include "Chunk.hpp"
 
 class Octree {
 
@@ -40,4 +40,4 @@ class Octree {
 
 };
 
-#endif
+#endif // OCTREE_H_

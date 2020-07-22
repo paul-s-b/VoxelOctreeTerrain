@@ -155,7 +155,6 @@
     <ClInclude Include="src\Text.hpp" />
     <ClInclude Include="src\Texture.hpp" />
     <ClInclude Include="src\Time.hpp" />
-    <ClInclude Include="src\util_inc.hpp" />
     <ClInclude Include="src\Window.hpp" />
   </ItemGroup>
   <ItemGroup>

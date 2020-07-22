@@ -98,9 +98,6 @@
     <ClInclude Include="src\Window.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\util_inc.hpp">
-      <Filter>Utilities</Filter>
-    </ClInclude>
     <ClInclude Include="src\DebugTimer.h">
       <Filter>Utilities</Filter>
     </ClInclude>

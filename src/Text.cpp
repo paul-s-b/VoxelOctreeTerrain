@@ -10,8 +10,7 @@ GLuint Text::_textureLocationID;
 GLuint Text::_VAO;
 bool Text::_init = false;
 
-Text::Text(std::string message)
-{
+Text::Text(std::string message) {
 
 	_message = message;
 	if (_init)
@@ -47,12 +46,12 @@ Text::Text(std::string message)
 	glTexImage2D(GL_TEXTURE_2D,
 		     0,
 		     GL_RGBA,
-		     textureParser.Width(),
-		     textureParser.Height(),
+		     textureParser.width(),
+		     textureParser.height(),
 		     0,
 		     GL_RGBA,
 		     GL_UNSIGNED_BYTE,
-		     textureParser.Data());
+		     textureParser.data());
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -67,8 +66,7 @@ Text::Text(std::string message)
 	_init = true;
 }
 
-void	Text::RenderChar(char c, glm::vec2 topleft, glm::vec2 botright)
-{
+void Text::_renderChar(char c, glm::vec2 topleft, glm::vec2 botright) {
 
 	glm::vec2 topleftUV((c % 16) / 16.0f, (16 - (c / 16)) / 16.0f);
 	glm::vec2 botrightUV(topleftUV.x + 1 / 16.0f, topleftUV.y - 1 / 16.0f);
@@ -123,9 +121,7 @@ void	Text::RenderChar(char c, glm::vec2 topleft, glm::vec2 botright)
 	glDisableVertexAttribArray(1);
 }
 
-void	Text::Render(float aspect)
-{
-
+void Text::render(float aspect) {
 
 //	float screenWidth = aspect;
 //	float screenHeight = 1;
@@ -145,7 +141,7 @@ void	Text::Render(float aspect)
 	charWidth *= charScale;
 	charHeight *= charScale;
 
-	_program->Use();
+	_program->use();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -162,7 +158,7 @@ void	Text::Render(float aspect)
 
 		float xCenter =	distFromCenter * charWidth * 0.8;
 
-		RenderChar(_message[i],
+		_renderChar(_message[i],
 			   glm::vec2(xCenter - charWidth / 2, charHeight / 2),
 			   glm::vec2(xCenter + charWidth / 2, -charHeight / 2));
 	}

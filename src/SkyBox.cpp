@@ -50,8 +50,7 @@ const std::vector<float> SkyBox::_vertexArray = {
 	+1.0f, -1.0f, +1.0f
 };
 
-void SkyBox::_loadArrayBuffers()
-{
+void SkyBox::_loadArrayBuffers() {
 	glGenBuffers(1, &_vertexArrayID);
 	glBindBuffer(GL_ARRAY_BUFFER, _vertexArrayID);
 	glBufferData(GL_ARRAY_BUFFER,
@@ -61,8 +60,7 @@ void SkyBox::_loadArrayBuffers()
 	);
 }
 
-void SkyBox::_loadTextures(const std::vector<Texture*>& textures)
-{
+void SkyBox::_loadTextures(const std::vector<Texture*>& textures) {
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	glGenTextures(1, &_textureID);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, _textureID);
@@ -73,12 +71,12 @@ void SkyBox::_loadTextures(const std::vector<Texture*>& textures)
 			GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
 			0,
 			GL_RGBA,
-			textures[i]->Width(),
-			textures[i]->Height(),
+			textures[i]->width(),
+			textures[i]->height(),
 			0,
 			GL_RGBA,
 			GL_UNSIGNED_BYTE,
-			textures[i]->Data()
+			textures[i]->data()
 		);
 	}
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -88,8 +86,7 @@ void SkyBox::_loadTextures(const std::vector<Texture*>& textures)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 }
 
-void SkyBox::_makeVAO()
-{
+void SkyBox::_makeVAO() {
 	glGenVertexArrays(1, &_VAO);
 	glBindVertexArray(_VAO);
 
@@ -101,8 +98,7 @@ void SkyBox::_makeVAO()
 }
 
 SkyBox::SkyBox(std::string right, std::string left, std::string top,
-			std::string bot, std::string back, std::string front)
-{
+			std::string bot, std::string back, std::string front) {
 	_program = new ShadingProgram(_vertexPath, _fragPath);
 	_textureLocationID = glGetUniformLocation(_program->ID(), "tex");
 	glUseProgram(_program->ID());
@@ -122,16 +118,14 @@ SkyBox::SkyBox(std::string right, std::string left, std::string top,
 	_makeVAO();
 }
 
-SkyBox::~SkyBox(void)
-{
+SkyBox::~SkyBox(void) {
 	glDeleteTextures(1, &_textureID);
 	glDeleteBuffers(1, &_vertexArrayID);
 	delete _program;
 }
 
-void	SkyBox::Render(const CameraData& cam_data)
-{
-	_program->Use();
+void SkyBox::render(const CameraData& cam_data) {
+	_program->use();
 	glm::mat4 transform = cam_data.projection * glm::mat4(glm::mat3(cam_data.view));
 	glUniformMatrix4fv(
 		_projectionID,

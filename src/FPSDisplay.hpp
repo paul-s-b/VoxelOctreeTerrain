@@ -1,12 +1,12 @@
-#pragma once
+#ifndef FPSDISPLAY_H_
+#define FPSDISPLAY_H_
 
-#include "util_inc.hpp"
 #include "Time.hpp"
 #include "Window.hpp"
 #include "Text.hpp"
+#include <iomanip>
 
-class	FPSDisplay
-{
+class	FPSDisplay {
 	int _index;
 	double _times[60];
 	double _timer;
@@ -17,5 +17,7 @@ public:
 
 	FPSDisplay();
 	~FPSDisplay();
-	void	Render(Window&);
+	void render(Window&);
 };
+
+#endif // FPSDISPLAY_H_
