@@ -1,4 +1,4 @@
-#include "Time.hpp"
+#include "Time.h"
 
 Time::Time(void) {
 	_oldTime = glfwGetTime();

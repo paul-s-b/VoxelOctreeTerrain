@@ -1,9 +1,9 @@
 #ifndef SKYBOX_H_
 #define SKYBOX_H_
 
-#include "FreeCamera.hpp"
-#include "Texture.hpp"
-#include "ShadingProgram.hpp"
+#include "FreeCamera.h"
+#include "Texture.h"
+#include "ShadingProgram.h"
 #include <glm.hpp>
 #include <ext.hpp>
 

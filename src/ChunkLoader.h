@@ -1,7 +1,7 @@
 #ifndef CHUNKLOADER_H_
 #define CHUNKLOADER_H_
 
-#include "Chunk.hpp"
+#include "Chunk.h"
 #include <map>
 #include <mutex>
 #include <thread>

@@ -1,7 +1,7 @@
 #define _USE_MATH_DEFINES
 
-#include "FreeCamera.hpp"
-#include "Landscape.hpp"
+#include "FreeCamera.h"
+#include "Landscape.h"
 
 FreeCamera::FreeCamera(Window& window, double yaw, double pitch) : _window(window) {
 	_data.position = glm::vec3(0, 0, 0);

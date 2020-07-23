@@ -1,7 +1,7 @@
 #ifndef FREECAMERA_H_
 #define FREECAMERA_H_
 
-#include "Window.hpp"
+#include "Window.h"
 #include "Frustum.h"
 
 struct	CameraData {

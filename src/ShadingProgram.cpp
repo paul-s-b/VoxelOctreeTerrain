@@ -1,4 +1,4 @@
-#include "ShadingProgram.hpp"
+#include "ShadingProgram.h"
 
 ShadingProgram::ShadingProgram(std::string vp, std::string fp) {
 	std::string shader;

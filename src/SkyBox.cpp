@@ -1,4 +1,4 @@
-#include "SkyBox.hpp"
+#include "SkyBox.h"
 
 const std::vector<float> SkyBox::_vertexArray = {
 	//back

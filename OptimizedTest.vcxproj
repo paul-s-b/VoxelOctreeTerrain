@@ -139,23 +139,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\AABB.h" />
-    <ClInclude Include="src\Chunk.hpp" />
-    <ClInclude Include="src\ChunkLoader.hpp" />
+    <ClInclude Include="src\Chunk.h" />
+    <ClInclude Include="src\ChunkLoader.h" />
     <ClInclude Include="src\CLW.h" />
     <ClInclude Include="src\DebugTimer.h" />
-    <ClInclude Include="src\FPSDisplay.hpp" />
-    <ClInclude Include="src\FreeCamera.hpp" />
+    <ClInclude Include="src\FPSDisplay.h" />
+    <ClInclude Include="src\FreeCamera.h" />
     <ClInclude Include="src\Frustum.h" />
-    <ClInclude Include="src\Landscape.hpp" />
+    <ClInclude Include="src\Landscape.h" />
     <ClInclude Include="src\Lighting.h" />
     <ClInclude Include="src\lodepng.h" />
     <ClInclude Include="src\Octree.h" />
-    <ClInclude Include="src\ShadingProgram.hpp" />
-    <ClInclude Include="src\SkyBox.hpp" />
-    <ClInclude Include="src\Text.hpp" />
-    <ClInclude Include="src\Texture.hpp" />
-    <ClInclude Include="src\Time.hpp" />
-    <ClInclude Include="src\Window.hpp" />
+    <ClInclude Include="src\ShadingProgram.h" />
+    <ClInclude Include="src\SkyBox.h" />
+    <ClInclude Include="src\Text.h" />
+    <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\Time.h" />
+    <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\skybox.frag" />

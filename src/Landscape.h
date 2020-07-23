@@ -1,9 +1,9 @@
 #ifndef LANDSCAPE_H_
 #define LANDSCAPE_H_
 
-#include "Chunk.hpp"
-#include "FreeCamera.hpp"
-#include "ChunkLoader.hpp"
+#include "Chunk.h"
+#include "FreeCamera.h"
+#include "ChunkLoader.h"
 #include "Octree.h"
 #include <glm.hpp>
 

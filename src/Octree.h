@@ -1,7 +1,7 @@
 #ifndef OCTREE_H_
 #define OCTREE_H_
 
-#include "Chunk.hpp"
+#include "Chunk.h"
 #include <unordered_map>
 #include <glm.hpp>
 #include <gtx/hash.hpp>

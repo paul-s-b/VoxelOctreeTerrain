@@ -1,4 +1,4 @@
-#include "Text.hpp"
+#include "Text.h"
 
 ShadingProgram* Text::_program = nullptr;
 std::vector<float> Text::_square;

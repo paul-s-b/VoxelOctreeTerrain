@@ -1,8 +1,8 @@
 #ifndef TEXT_H_
 #define TEXT_H_
 
-#include "ShadingProgram.hpp"
-#include "Texture.hpp"
+#include "ShadingProgram.h"
+#include "Texture.h"
 #include <glm.hpp>
 
 class Text {

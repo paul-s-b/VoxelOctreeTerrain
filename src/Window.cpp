@@ -1,4 +1,4 @@
-#include "Window.hpp"
+#include "Window.h"
 
 Window::Window(int width, int height, std::string name) :
 	_screenCornerX(0),

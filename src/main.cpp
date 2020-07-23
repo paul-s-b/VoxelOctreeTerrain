@@ -1,10 +1,10 @@
-#include "Chunk.hpp"
-#include "Window.hpp"
-#include "FreeCamera.hpp"
-#include "FPSDisplay.hpp"
-#include "Time.hpp"
-#include "Landscape.hpp"
-#include "SkyBox.hpp"
+#include "Chunk.h"
+#include "Window.h"
+#include "FreeCamera.h"
+#include "FPSDisplay.h"
+#include "Time.h"
+#include "Landscape.h"
+#include "SkyBox.h"
 
 int	main(void)
 {

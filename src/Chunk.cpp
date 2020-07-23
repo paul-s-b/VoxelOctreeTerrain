@@ -1,4 +1,4 @@
-#include "Chunk.hpp"
+#include "Chunk.h"
 
 ShadingProgram* Chunk::_program;
 GLuint Chunk::_perspectiveID;
@@ -15,24 +15,13 @@ Chunk::Chunk(glm::ivec3 pos, cl_int LOD)
 	_aabb.update({ (pos.x - (LOD / 2.0)) * chunkSize,
 				   (pos.y - (LOD / 2.0)) * chunkSize,
 				   (pos.z - (LOD / 2.0)) * chunkSize });
-	
-	//cl_float3* triangles = new cl_float3[(chunkSize / LOD * chunkSize / LOD * chunkSize / LOD) * 4];
-	//cl_float2* uvs = new cl_float2[(chunkSize / LOD * chunkSize / LOD * chunkSize / LOD) * 4];
-	//cl_float3* normals = new cl_float3[(chunkSize / LOD * chunkSize / LOD * chunkSize / LOD) * 4];
-	//cl_float3* indices = new cl_float3[(chunkSize / LOD * chunkSize / LOD * chunkSize / LOD) * 2];
 
 	int *_landmap_flags = new int[68 * 68 * 68];
 	cl_float3 clpos = { pos.x - (LOD / 2.0), pos.y - (LOD / 2.0), pos.z - (LOD / 2.0) };
 	_clw.CLNoise(_landmap_flags, clpos, LOD, chunkSize);
-	//_clw.CLMesh(_landmap_flags, clpos, LOD, chunkSize, triangles, uvs, normals, indices, _tex_atlas_width, nrOfIndices);
 	_createMesh(pos, _landmap_flags, LOD);
 
 	delete[] _landmap_flags;
-
-	//delete[]triangles;
-	//delete[]uvs;
-	//delete[]normals;
-	//delete[]indices;
 }
 
 void Chunk::unload() {

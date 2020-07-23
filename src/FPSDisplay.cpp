@@ -1,4 +1,4 @@
-#include "FPSDisplay.hpp"
+#include "FPSDisplay.h"
 
 FPSDisplay::FPSDisplay() {
 	_index = 0;

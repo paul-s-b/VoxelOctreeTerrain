@@ -1,4 +1,4 @@
-#include "Landscape.hpp"
+#include "Landscape.h"
 
 LandscapeManager::LandscapeManager()
 	: _center(0, 0, 0) {

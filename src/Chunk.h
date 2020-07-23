@@ -1,9 +1,9 @@
 #ifndef CHUNK_H_
 #define CHUNK_H_
 
-#include "ShadingProgram.hpp"
-#include "FreeCamera.hpp"
-#include "Texture.hpp"
+#include "ShadingProgram.h"
+#include "FreeCamera.h"
+#include "Texture.h"
 #include "CLW.h"
 #include "AABB.h"
 #include <stdlib.h>

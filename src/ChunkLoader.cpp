@@ -1,4 +1,4 @@
-#include "ChunkLoader.hpp"
+#include "ChunkLoader.h"
 
 ChunkLoader::ChunkLoader() {
 	for (size_t i = 0; i < 4; i++)

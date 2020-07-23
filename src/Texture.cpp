@@ -1,4 +1,4 @@
-#include "Texture.hpp"
+#include "Texture.h"
 
 std::map<std::string, Texture::TextureInfo> Texture::_cache;
 

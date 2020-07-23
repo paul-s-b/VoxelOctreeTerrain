@@ -1,9 +1,9 @@
 #ifndef FPSDISPLAY_H_
 #define FPSDISPLAY_H_
 
-#include "Time.hpp"
-#include "Window.hpp"
-#include "Text.hpp"
+#include "Time.h"
+#include "Window.h"
+#include "Text.h"
 #include <iomanip>
 
 class	FPSDisplay {
