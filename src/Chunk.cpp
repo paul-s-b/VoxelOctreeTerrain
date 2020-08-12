@@ -16,18 +16,28 @@ Chunk::Chunk(glm::ivec3 pos, cl_int LOD)
 				   (pos.y - (LOD / 2.0)) * chunkSize,
 				   (pos.z - (LOD / 2.0)) * chunkSize });
 
-	int *_landmap_flags = new int[68 * 68 * 68];
-	cl_float3 clpos = { pos.x - (LOD / 2.0), pos.y - (LOD / 2.0), pos.z - (LOD / 2.0) };
-	_clw.CLNoise(_landmap_flags, clpos, LOD, chunkSize);
-	_createMesh(pos, _landmap_flags, LOD);
+	int *landmap_flags = new int[68 * 68 * 68];
+	//cl_float3* triangle_flags = new cl_float3[12 * 64 * 64 * 64];
+	//cl_float3* normal_flags = new cl_float3[12 * 64 * 64 * 64];
+	//cl_float3* index_flags = new cl_float3[6 * 64 * 64 * 64];
 
-	delete[] _landmap_flags;
+	cl_float3 clpos = { pos.x - (LOD / 2.0), pos.y - (LOD / 2.0), pos.z - (LOD / 2.0) };
+	_clw.CLNoise(landmap_flags, clpos, LOD, chunkSize);
+	//_clw.CLMesh(landmap_flags, triangle_flags, normal_flags, index_flags, clpos, LOD, chunkSize);
+
+	_createMesh(pos, landmap_flags, LOD);
+
+	delete[] landmap_flags;
+	//delete[] triangle_flags;
+	//delete[] normal_flags;
+	//delete[] index_flags;
 }
 
 void Chunk::unload() {
 	glDeleteBuffers(1, &_trianglesID);
 	glDeleteBuffers(1, &_normalsID);
 	glDeleteBuffers(1, &_IndiceID);
+	glDeleteBuffers(1, &_colorsID);
 	glDeleteVertexArrays(1, &_VAO);
 }
 
@@ -52,6 +62,7 @@ void Chunk::_loadArrayBuffers() {
 	glGenBuffers(1, &_trianglesID);
 	glGenBuffers(1, &_normalsID);
 	glGenBuffers(1, &_IndiceID);
+	glGenBuffers(1, &_colorsID);
 
 	glBindBuffer(GL_ARRAY_BUFFER, _trianglesID);
 	glBufferData(GL_ARRAY_BUFFER,
@@ -65,6 +76,11 @@ void Chunk::_loadArrayBuffers() {
 		_normals.data(),
 		GL_STATIC_DRAW);
 
+	glBindBuffer(GL_ARRAY_BUFFER, _colorsID);
+	glBufferData(GL_ARRAY_BUFFER,
+		_colors.size() * 3 * sizeof(GLfloat),
+		_colors.data(),
+		GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _IndiceID);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
@@ -83,6 +99,10 @@ void Chunk::_makeVAO() {
 	glBindBuffer(GL_ARRAY_BUFFER, _normalsID);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
+	glEnableVertexAttribArray(2);
+	glBindBuffer(GL_ARRAY_BUFFER, _colorsID);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
 	glBindVertexArray(0);
 }
 
@@ -94,28 +114,56 @@ void Chunk::_addRectangle(glm::vec3 center, glm::vec3 height, glm::vec3 width) {
 
 	glm::vec3 normal = glm::cross(height, width);
 
+	glm::vec3 color = glm::vec3(0.51, 0.51, 0.51);
+	glm::vec3 color2 = glm::vec3(0.11, 0.25, 0.22);
 	// triangle 1
 	_triangles.push_back(corner3);
 	_triangles.push_back(corner2);
 	_triangles.push_back(corner1);
+	_triangles.push_back(corner4);
 
 	_normals.push_back(normal);
 	_normals.push_back(normal);
 	_normals.push_back(normal);
+	_normals.push_back(normal);
+
+	// arbitrary color gradient
+	if (corner3.y <= -300)
+		_colors.push_back(color2);
+	else if (corner3.y >= 300)
+		_colors.push_back(color);
+	else
+		_colors.push_back(color2 + (abs(color - color2) * (corner3.y + 300) / 600));
+
+	if (corner2.y <= -300)
+		_colors.push_back(color2);
+	else if (corner2.y >= 300)
+		_colors.push_back(color);
+	else
+		_colors.push_back(color2 + (abs(color - color2) * (corner2.y + 300) / 600));
+
+	if (corner1.y <= -300)
+		_colors.push_back(color2);
+	else if (corner1.y >= 300)
+		_colors.push_back(color);
+	else
+		_colors.push_back(color2 + (abs(color - color2) * (corner1.y + 300) / 600));
+
+	if (corner4.y <= -300)
+		_colors.push_back(color2);
+	else if (corner4.y >= 300)
+		_colors.push_back(color);
+	else
+		_colors.push_back(color2 + (abs(color - color2) * (corner4.y + 300) / 600));
+
 	
 	_indices.push_back(glm::ivec3(_nrOfIndices + 0, _nrOfIndices + 1, _nrOfIndices + 2));
-
-	// triangle 2 
-
-	_triangles.push_back(corner4);
-	_normals.push_back(normal);
-
 	_indices.push_back(glm::ivec3(_nrOfIndices + 2, _nrOfIndices + 3, _nrOfIndices + 0));
 	_nrOfIndices += 4;
 
 }
 
-void Chunk::_createMesh(glm::ivec3 pos, int landmap_flags[68 * 68 * 68], cl_int LOD) {
+void Chunk::_createMesh(glm::ivec3 pos, int* landmap_flags, cl_int LOD) {
 	std::byte* faces = new std::byte[chunkSize * chunkSize * chunkSize];
 
 	int index = 0;

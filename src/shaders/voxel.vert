@@ -2,6 +2,7 @@
 
 layout (location = 0) in vec3 vertex;
 layout (location = 1) in vec3 normal;
+layout (location = 2) in vec3 color;
 
 uniform mat4 VP;
 uniform mat4 perspective;
@@ -13,6 +14,7 @@ out	vec3 normal_v;
 out vec3 dir_v;
 out float dist_v;
 out vec2 uv_v;
+out vec3 color_v;
 
 out vec3 FragPos;
 out vec3 campos_v;
@@ -26,6 +28,7 @@ void	main()
     dist_v = length(dir_v);
     dir_v = normalize(dir_v);
     FragPos = vertpos;
+    color_v = color;
 
     campos_v = campos;
 }

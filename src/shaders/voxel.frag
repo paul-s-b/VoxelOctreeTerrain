@@ -4,11 +4,10 @@ in vec3 normal_v; // normals
 in vec3 dir_v;    // view direction
 in float dist_v;  // distance from camera
 in vec3 FragPos;  // fragment position
+in vec3 color_v;  // vertex color
 in vec3 campos_v; // camera position
 
-uniform vec3 voxColor;
-
-out vec3 color;
+out vec3 fragColor;
 
 struct DirLight {
     vec3 direction;
@@ -63,7 +62,7 @@ void	main()
     //for(int i = 0; i < 1; i++)
     //    result += CalcPointLight(pLight, norm, FragPos, dir_v, dist_v);  
 
-	color = vec3(0.51, 0.51, 0.51) * result;
+	fragColor = result * color_v;
 }
 
 // calculates the color when using a directional light.

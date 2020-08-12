@@ -17,10 +17,8 @@
 enum BLOCK : uint8_t { FILLED, AIR };
 enum Direction : uint8_t { North = 1, East = 2, South = 4, West = 8, Up = 16, Down = 32 };
 
-// chunkSize should be power of 2 up to 64
+// chunkSize should be power of 2
 const cl_int chunkSize = 64;
-// 3D array i is arbitrary size 96 x 96 x 96
-// allows for LOD up to level 16
 
 class Chunk {
 protected:
@@ -38,6 +36,7 @@ protected:
 	GLuint _trianglesID;
 	GLuint _normalsID;
 	GLuint _IndiceID;
+	GLuint _colorsID;
 
 	// vertex array object
 	GLuint _VAO;
@@ -62,6 +61,9 @@ private:
 	// 3 vertices
 	std::vector<glm::ivec3> _indices;
 
+	// array of colors
+	std::vector<glm::vec3> _colors;
+
 	// AABB of chunk
 	AABB _aabb;
 
@@ -69,7 +71,7 @@ private:
 	void _addRectangle(glm::vec3 center, glm::vec3 height, glm::vec3 width);
 
 	// fill the _triangles, _uvs and _normals
-	void _createMesh(glm::ivec3 pos, int landmap_flags[68 * 68 * 68], cl_int LOD);
+	void _createMesh(glm::ivec3 pos, int* landmap_flags, cl_int LOD);
 
 	// openCL wrapper
 	CLW _clw;
@@ -102,6 +104,5 @@ public:
 	static void render(const CameraData& cam_data, const std::vector<Chunk*>& chunks);
 
 };
-
 
 #endif // CHUNK_H_
