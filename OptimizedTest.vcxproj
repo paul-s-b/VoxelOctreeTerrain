@@ -163,6 +163,7 @@
     <None Include="src\shaders\text.frag" />
     <None Include="src\shaders\text.vert" />
     <None Include="src\shaders\voxel.frag" />
+    <None Include="src\shaders\voxel.geo" />
     <None Include="src\shaders\voxel.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -2,12 +2,6 @@
 
 cl::Buffer CLW::buffer_landmap;
 cl::Kernel CLW::terrain_gen;
-
-cl::Buffer CLW::buffer_triangles;
-cl::Buffer CLW::buffer_normals;
-cl::Buffer CLW::buffer_indices;
-cl::Kernel CLW::mesh_gen;
-
 cl::CommandQueue CLW::queue;
 
 void CLW::init() {
@@ -162,153 +156,16 @@ void CLW::init() {
     "    const float noise_3 = _slang_library_noise2( ((x*LOD)+(chunkSize*pos.x))/frequency/30, ((z*LOD)+(chunkSize*pos.z))/frequency/30 );"
     "    const float noise_4 = _slang_library_noise2( ((x*LOD)+(chunkSize*pos.x))/frequency/400, ((z*LOD)+(chunkSize*pos.z))/frequency/400 );"
     "    "
-    "    landmap_flags[n] = (1000*noise_1*noise_1*noise_1*noise_1*noise_1*noise_1+(100*noise_2*noise_2)-(800*noise_3*noise_3)-(6000*noise_4*noise_4)>((y*LOD)+(chunkSize*pos.y))) ? FILLED : AIR;"
-    "    if(1000*noise_1*noise_1*noise_1*noise_1*noise_1*noise_1+(100*noise_2*noise_2)-(800*noise_3*noise_3)-(6000*noise_4*noise_4) <= -400)"
-    "        landmap_flags[n] = (-400<(y*LOD+(chunkSize * pos.y))) ? AIR : FILLED;"
-    "}";
-    std::string mesh_kernel_code = 
-    "inline void addRectangle(float3 center, float3 height, float3 width, global float3* triangle_flags, global float3* normal_flags, global float3* index_flags) {"
-    "    const uint a = get_global_id(0);"
-    "    const uint b = get_global_id(1);"
-    "    const uint c = get_global_id(2);"
-    "    const uint d = get_global_id(3);"
-    "    float3 corner1;"
-    "    float3 corner2;"
-    "    float3 corner3;"
-    "    float3 corner4;"
-    "    float3 indices1;"
-    "    float3 indices2;"
-    "    corner1.x = center.x - (height.x / 2.0) - (width.x / 2.0);"
-    "    corner1.y = center.y - (height.y / 2.0) - (width.y / 2.0);"
-    "    corner1.z = center.z - (height.z / 2.0) - (width.z / 2.0);"
-    "    corner2.x = center.x - (height.x / 2.0) + (width.x / 2.0);"
-    "    corner2.y = center.y - (height.y / 2.0) + (width.y / 2.0);"
-    "    corner2.z = center.z - (height.z / 2.0) + (width.z / 2.0);"
-    "    corner3.x = center.x + (height.x / 2.0) + (width.x / 2.0);"
-    "    corner3.y = center.y + (height.y / 2.0) + (width.y / 2.0);"
-    "    corner3.z = center.z + (height.z / 2.0) + (width.z / 2.0);"
-    "    corner4.x = center.x + (height.x / 2.0) - (width.x / 2.0);"
-    "    corner4.y = center.y + (height.y / 2.0) - (width.y / 2.0);"
-    "    corner4.z = center.z + (height.z / 2.0) - (width.z / 2.0);"
-    "    indices1.x = a;"
-    "    indices1.y = b;"
-    "    indices1.z = c;"
-    "    indices2.x = c;"
-    "    indices2.y = d;"
-    "    indices2.z = a;"
-    "    "
-    "    float3 normal = cross(height, width);"
-    "    "
-    "    triangle_flags[a] = corner3;"
-    "    triangle_flags[b] = corner2;"
-    "    triangle_flags[c] = corner1;"
-    "    triangle_flags[d] = corner4;"
-    "    "
-    "    normal_flags[a] = normal;"
-    "    normal_flags[b] = normal;"
-    "    normal_flags[c] = normal;"
-    "    normal_flags[d] = normal;"
-    "    "
-    "    index_flags[(b / 2)] = indices1;"
-    "    index_flags[(d / 2)] = indices2;"
-    "    "
-    "}"
-    "    "
-    "void kernel mesh_gen(global int* landmap_flags, global float3* triangle_flags, global float3* normal_flags, global float3* index_flags, const float3 pos, const int LOD, const int chunkSize) {"
-    "    "
-    "    const uint a = get_global_id(0);"
-    "    const uint b = get_global_id(1);"
-    "    const uint c = get_global_id(2);"
-    "    const uint d = get_global_id(3);"
-    "    const uint n = (d / 4);"
-    "    uint x = n%(chunkSize+2);"
-    "    uint y = (n/(chunkSize+2))%(chunkSize+2);"
-    "    uint z = n/((chunkSize+2)*(chunkSize+2));"
-    "    enum BLOCK { FILLED, AIR };"
-    "    enum Direction { North = 1, East = 2, South = 4, West = 8, Up = 16, Down = 32 };"
-    "    uchar faces[6] = {0, 0, 0, 0, 0, 0};"
-    "    "
-    "    if (x > 0 && y > 0 && z > 0 && x < chunkSize + 1 && y < chunkSize + 1 && z < chunkSize + 1) {"
-    "        if (landmap_flags[x + y * (chunkSize + 2) + z * (chunkSize + 2) * (chunkSize + 2)] != AIR) {"
-    "            if (landmap_flags[(x - 1) + y * (chunkSize + 2) + z * (chunkSize + 2) * (chunkSize + 2)] == AIR) {"
-    "                faces[0] = South;"
-    "            }"
-    "            if (landmap_flags[(x + 1) + y * (chunkSize + 2) + z * (chunkSize + 2) * (chunkSize + 2)] == AIR) {"
-    "                faces[1] = North;"                                                               
-    "            }"                                                                                   
-    "            if (landmap_flags[x + (y - 1) * (chunkSize + 2) + z * (chunkSize + 2) * (chunkSize + 2)] == AIR) {"
-    "                faces[2] = Down;"                                                                
-    "            }"                                                                                   
-    "            if (landmap_flags[x + (y + 1) * (chunkSize + 2) + z * (chunkSize + 2) * (chunkSize + 2)] == AIR) {"
-    "                faces[3] = Up;"                                                                  
-    "            }"                                                                                   
-    "            if (landmap_flags[x + y * (chunkSize + 2) + (z - 1) * (chunkSize + 2) * (chunkSize + 2)] == AIR) {"
-    "                faces[4] = West;"                                                                
-    "            }"                                                                                   
-    "            if (landmap_flags[x + y * (chunkSize + 2) + (z + 1) * (chunkSize + 2) * (chunkSize + 2)] == AIR) {"
-    "                faces[5] = East;"
-    "            }"
-    "        }"
-    "    }"
-    "    x = x*LOD;"
-    "    y = y*LOD;"
-    "    z = z*LOD;"
-    "    if (x > 0 && y > 0 && z > 0 && x < (chunkSize * LOD) + LOD && y < (chunkSize * LOD) + LOD && z < (chunkSize * LOD) + LOD) {"
-    "        if (!(faces[0] == 0 && faces[1] == 0 && faces[2] == 0 && faces[3] == 0 && faces[4] == 0 && faces[5] == 0)) {"
-    "            if (faces[1] == North) {"
-    "                float3 center = {x + ((chunkSize - 1) * pos.x) - (chunkSize / 2) - ((float)(LOD - 1) / 2) + ((float)(LOD) / 2),"
-    "		     	 	 		      y + ((chunkSize - 1) * pos.y) - (chunkSize / 2) - ((float)(LOD - 1) / 2),"
-    "		     	 	 		      z + ((chunkSize - 1) * pos.z) - (chunkSize / 2) - ((float)(LOD - 1) / 2)};"
-    "                float3 height = {0, LOD, 0};"
-    "                float3 width = {0, 0, -LOD};"
-    "		     	 addRectangle(center, height, width, triangle_flags, normal_flags, index_flags);"
-    "            }"
-    "		     if (faces[5] == East) {"
-    "                float3 center = {x + ((chunkSize - 1) * pos.x) - (chunkSize / 2) - ((float)(LOD - 1) / 2),"
-    "		 		 		          y + ((chunkSize - 1) * pos.y) - (chunkSize / 2) - ((float)(LOD - 1) / 2),"
-    "		 		 		          z + ((chunkSize - 1) * pos.z) - (chunkSize / 2) - ((float)(LOD - 1) / 2) + ((float)(LOD) / 2)};"
-    "                float3 height = {0, LOD, 0};"
-    "                float3 width = {LOD, 0, 0};"
-    "		 	     addRectangle(center, height, width, triangle_flags, normal_flags, index_flags);"
-    "            }"
-    "		     if (faces[0] == South) {"
-    "                float3 center = {x + ((chunkSize - 1) * pos.x) - (chunkSize / 2) - ((float)(LOD - 1) / 2) - ((float)(LOD) / 2),"
-	"		 		 		          y + ((chunkSize - 1) * pos.y) - (chunkSize / 2) - ((float)(LOD - 1) / 2),"
-	"		 		 		          z + ((chunkSize - 1) * pos.z) - (chunkSize / 2) - ((float)(LOD - 1) / 2)};"
-    "                float3 height = {0, LOD, 0};"
-    "                float3 width = {0, 0, LOD};"
-	"		 	     addRectangle(center, height, width, triangle_flags, normal_flags, index_flags);"
-    "            }"
-	"		     if (faces[4] == West) {"
-    "                float3 center = {x + ((chunkSize - 1) * pos.x) - (chunkSize / 2) - ((float)(LOD - 1) / 2),"
-	"		 		 	              y + ((chunkSize - 1) * pos.y) - (chunkSize / 2) - ((float)(LOD - 1) / 2),"
-	"		 		 		          z + ((chunkSize - 1) * pos.z) - (chunkSize / 2) - ((float)(LOD - 1) / 2) - ((float)(LOD) / 2)};"
-    "                float3 height = {0, LOD, 0};"
-    "                float3 width = {-LOD, 0, 0};"
-	"		 	     addRectangle(center, height, width, triangle_flags, normal_flags, index_flags);"
-    "            }"
-	"		     if (faces[3] == Up) {"
-    "                float3 center = {x + ((chunkSize - 1) * pos.x) - (chunkSize / 2) - ((float)(LOD - 1) / 2),"
-	"		 		 		          y + ((chunkSize - 1) * pos.y) - (chunkSize / 2) - ((float)(LOD - 1) / 2) + ((float)(LOD) / 2),"
-	"		 		 		          z + ((chunkSize - 1) * pos.z) - (chunkSize / 2) - ((float)(LOD - 1) / 2)};"
-    "                float3 height = {LOD, 0, 0};"
-    "                float3 width = {0, 0, LOD};"
-	"		 	     addRectangle(center, height, width, triangle_flags, normal_flags, index_flags);"
-    "            }"
-    "   		 if (faces[2] == Down) {"
-    "                float3 center = {x + ((chunkSize - 1) * pos.x) - (chunkSize / 2) - ((float)(LOD - 1) / 2),"
-	"		 		 		          y + ((chunkSize - 1) * pos.y) - (chunkSize / 2) - ((float)(LOD - 1) / 2) - ((float)(LOD) / 2),"
-	"		 		 		          z + ((chunkSize - 1) * pos.z) - (chunkSize / 2) - ((float)(LOD - 1) / 2)};"
-    "                float3 height = {LOD, 0, 0};"
-    "                float3 width = {0, 0, -LOD};"
-	"		 	     addRectangle(center, height, width, triangle_flags, normal_flags, index_flags);"
-    "            }"
-    "        }"
+    "    const float yVar = 1000*noise_1*noise_1*noise_1*noise_1*noise_1*noise_1+(100*noise_2*noise_2)-(800*noise_3*noise_3)-(6000*noise_4*noise_4);"
+    "    landmap_flags[n] = (yVar>((y*LOD)+(chunkSize*pos.y))) ? FILLED : AIR;"
+    "    if(yVar >= -200) {"
+    "        landmap_flags[n] = (-200<(y*LOD+(chunkSize * pos.y))) ? AIR : FILLED;"
+    "        if (landmap_flags[n] == AIR)"
+    "            landmap_flags[n] = (yVar-100>((y*LOD)+(chunkSize*pos.y))) ? FILLED : AIR;"
     "    }"
     "}";
 
     sources.push_back({ noise_kernel_code.c_str(), noise_kernel_code.length() });
-    //sources.push_back({ mesh_kernel_code.c_str(), mesh_kernel_code.length() });
 
     cl::Program program(context, sources);
 
@@ -316,43 +173,21 @@ void CLW::init() {
         std::cout << "Error building: " << program.getBuildInfo<CL_PROGRAM_BUILD_LOG>(default_device) << std::endl;
         exit(1);
     }
-    
+
+    // could be 68 minumum, also try 256 or 512
     const int n = 68 * 68 * 68;
-    //const int o = 12 * 64 * 64 * 64;
-    //const int p = 12 * 64 * 64 * 64;
-    //const int q = 6 * 64 * 64 * 64;
 
     // write buffers for noise generation
     CLW::buffer_landmap = cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(int) * n);
-    CLW::queue = cl::CommandQueue(context, default_device);
+    CLW::queue = cl::CommandQueue(context, default_device, CL_QUEUE_PROFILING_ENABLE);
 
     int *landmap_flags = new int[n];
     queue.enqueueWriteBuffer(buffer_landmap, CL_TRUE, 0, sizeof(int) * n, landmap_flags);
     CLW::terrain_gen = cl::Kernel(program, "terrain_gen");
     delete[] landmap_flags;
-
-    // write buffers for mesh generation
-    //CLW::buffer_triangles = cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(int) * o);
-    //CLW::buffer_normals = cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(int) * p);
-    //CLW::buffer_indices = cl::Buffer(context, CL_MEM_READ_WRITE, sizeof(int) * q);
-    //
-    //cl_float3* triangle_flags = new cl_float3[o];
-    //cl_float3* normal_flags = new cl_float3[p];
-    //cl_float3* index_flags = new cl_float3[q];
-    //
-    //queue.enqueueWriteBuffer(buffer_triangles, CL_TRUE, 0, sizeof(cl_float3) * o, triangle_flags);
-    //queue.enqueueWriteBuffer(buffer_normals, CL_TRUE, 0, sizeof(cl_float3) * p, normal_flags);
-    //queue.enqueueWriteBuffer(buffer_indices, CL_TRUE, 0, sizeof(cl_float3) * q, index_flags);
-    //CLW::mesh_gen = cl::Kernel(program, "mesh_gen");
-    //delete[] triangle_flags;
-    //delete[] normal_flags;
-    //delete[] index_flags;
 }
 
-void CLW::CLNoise(int* landmap_flags,
-                  cl_float3 pos, 
-                  cl_int LOD, 
-                  cl_int chunkSize) {
+void CLW::CLNoise(int* landmap_flags, cl_float3 pos, cl_int LOD, cl_int chunkSize) {
     const int n = 68 * 68 * 68;
 
     terrain_gen.setArg(0, buffer_landmap);
@@ -363,30 +198,5 @@ void CLW::CLNoise(int* landmap_flags,
     queue.enqueueNDRangeKernel(terrain_gen, cl::NullRange, cl::NDRange(n), cl::NDRange(32));
     queue.enqueueReadBuffer(buffer_landmap, CL_TRUE, 0, sizeof(int) * n, landmap_flags);
 
-    queue.finish();
-}
-
-void CLW::CLMesh(int* landmap_flags, 
-                 cl_float3 triangle_flags[12 * 64 * 64 * 64], 
-                 cl_float3 normal_flags[12 * 64 * 64 * 64], 
-                 cl_float3 index_flags[6 * 64 * 64 * 64], 
-                 cl_float3 pos, cl_int LOD, cl_int chunkSize) {
-    const int o = 12 * 64 * 64 * 64;
-    const int p = 12 * 64 * 64 * 64;
-    const int q = 6 * 64 * 64 * 64;
-    
-    mesh_gen.setArg(0, buffer_landmap);
-    mesh_gen.setArg(1, buffer_triangles);
-    mesh_gen.setArg(2, buffer_normals);
-    mesh_gen.setArg(3, buffer_indices);
-    mesh_gen.setArg(4, pos);
-    mesh_gen.setArg(5, LOD);
-    mesh_gen.setArg(6, chunkSize);
-    // read vector with %vector[0] instead of flags
-    queue.enqueueNDRangeKernel(mesh_gen, cl::NullRange, cl::NDRange(o), cl::NDRange(32));
-    queue.enqueueReadBuffer(buffer_triangles, CL_TRUE, 0, sizeof(cl_float3) * o, triangle_flags);
-    queue.enqueueReadBuffer(buffer_normals, CL_TRUE, 0, sizeof(cl_float3) * p, normal_flags);
-    queue.enqueueReadBuffer(buffer_indices, CL_TRUE, 0, sizeof(cl_float3) * q, index_flags);
-    
     queue.finish();
 }

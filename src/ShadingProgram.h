@@ -18,7 +18,7 @@ private:
 	void _checkLinking(void);
 
 public:
-	ShadingProgram(std::string vertexPath, std::string fragPath);
+	ShadingProgram(std::string vertexPath, std::string fragPath, std::string geometryPath = "");
 	void use(void);
 	GLuint ID(void);
 };

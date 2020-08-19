@@ -1,5 +1,4 @@
 #include "Chunk.h"
-
 ShadingProgram* Chunk::_program;
 GLuint Chunk::_perspectiveID;
 GLuint Chunk::_lookAtID;
@@ -15,22 +14,13 @@ Chunk::Chunk(glm::ivec3 pos, cl_int LOD)
 	_aabb.update({ (pos.x - (LOD / 2.0)) * chunkSize,
 				   (pos.y - (LOD / 2.0)) * chunkSize,
 				   (pos.z - (LOD / 2.0)) * chunkSize });
-
 	int *landmap_flags = new int[68 * 68 * 68];
-	//cl_float3* triangle_flags = new cl_float3[12 * 64 * 64 * 64];
-	//cl_float3* normal_flags = new cl_float3[12 * 64 * 64 * 64];
-	//cl_float3* index_flags = new cl_float3[6 * 64 * 64 * 64];
 
 	cl_float3 clpos = { pos.x - (LOD / 2.0), pos.y - (LOD / 2.0), pos.z - (LOD / 2.0) };
 	_clw.CLNoise(landmap_flags, clpos, LOD, chunkSize);
-	//_clw.CLMesh(landmap_flags, triangle_flags, normal_flags, index_flags, clpos, LOD, chunkSize);
-
 	_createMesh(pos, landmap_flags, LOD);
-
+	
 	delete[] landmap_flags;
-	//delete[] triangle_flags;
-	//delete[] normal_flags;
-	//delete[] index_flags;
 }
 
 void Chunk::unload() {
@@ -127,34 +117,40 @@ void Chunk::_addRectangle(glm::vec3 center, glm::vec3 height, glm::vec3 width) {
 	_normals.push_back(normal);
 	_normals.push_back(normal);
 
+	std::random_device rd;
+	std::default_random_engine generator(rd()); // rd() provides a random seed
+	std::uniform_real_distribution<double> distribution(-0.02, 0.02);
+
+	glm::vec3 randomOffset = { distribution(generator), distribution(generator), distribution(generator) };
+
 	// arbitrary color gradient
 	if (corner3.y <= -300)
-		_colors.push_back(color2);
+		_colors.push_back(color2 + randomOffset);
 	else if (corner3.y >= 300)
-		_colors.push_back(color);
+		_colors.push_back(color + randomOffset);
 	else
-		_colors.push_back(color2 + (abs(color - color2) * (corner3.y + 300) / 600));
+		_colors.push_back(color2 + randomOffset + (abs(color - color2) * (corner3.y + 300) / 600));
 
 	if (corner2.y <= -300)
-		_colors.push_back(color2);
+		_colors.push_back(color2 + randomOffset);
 	else if (corner2.y >= 300)
-		_colors.push_back(color);
+		_colors.push_back(color + randomOffset);
 	else
-		_colors.push_back(color2 + (abs(color - color2) * (corner2.y + 300) / 600));
+		_colors.push_back(color2 + randomOffset + (abs(color - color2) * (corner2.y + 300) / 600));
 
 	if (corner1.y <= -300)
-		_colors.push_back(color2);
+		_colors.push_back(color2 + randomOffset);
 	else if (corner1.y >= 300)
-		_colors.push_back(color);
+		_colors.push_back(color + randomOffset);
 	else
-		_colors.push_back(color2 + (abs(color - color2) * (corner1.y + 300) / 600));
+		_colors.push_back(color2 + randomOffset + (abs(color - color2) * (corner1.y + 300) / 600));
 
 	if (corner4.y <= -300)
-		_colors.push_back(color2);
+		_colors.push_back(color2 + randomOffset);
 	else if (corner4.y >= 300)
-		_colors.push_back(color);
+		_colors.push_back(color + randomOffset);
 	else
-		_colors.push_back(color2 + (abs(color - color2) * (corner4.y + 300) / 600));
+		_colors.push_back(color2 + randomOffset + (abs(color - color2) * (corner4.y + 300) / 600));
 
 	
 	_indices.push_back(glm::ivec3(_nrOfIndices + 0, _nrOfIndices + 1, _nrOfIndices + 2));

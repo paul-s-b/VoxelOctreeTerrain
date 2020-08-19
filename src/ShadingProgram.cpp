@@ -1,6 +1,6 @@
 #include "ShadingProgram.h"
 
-ShadingProgram::ShadingProgram(std::string vp, std::string fp) {
+ShadingProgram::ShadingProgram(std::string vp, std::string fp, std::string gp) {
 	std::string shader;
 	GLuint shader_id;
 	const GLchar *source;
@@ -22,6 +22,16 @@ ShadingProgram::ShadingProgram(std::string vp, std::string fp) {
 	glCompileShader(shader_id);
 	_checkCompilation(shader_id, fp);
 	glAttachShader(_program, shader_id);
+
+	if (!gp.empty()) {
+		shader = _getShaderCode(gp);
+		shader_id = glCreateShader(GL_GEOMETRY_SHADER);
+		source = shader.c_str();
+		glShaderSource(shader_id, 1, &source, nullptr);
+		glCompileShader(shader_id);
+		_checkCompilation(shader_id, gp);
+		glAttachShader(_program, shader_id);
+	}
 	glLinkProgram(_program);
 	_checkLinking();
 }

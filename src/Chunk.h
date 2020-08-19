@@ -12,6 +12,7 @@
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <ext.hpp>
+#include <random>
 
 //change uint8_t to uint16_t if number of blocks in enum exceeds 255
 enum BLOCK : uint8_t { FILLED, AIR };
@@ -23,6 +24,7 @@ const cl_int chunkSize = 64;
 class Chunk {
 protected:
 	static constexpr const char* _vertexPath = "src/shaders/voxel.vert";
+	//static constexpr const char* _geometryPath = "src/shaders/voxel.geo";
 	static constexpr const char* _fragPath = "src/shaders/voxel.frag";
 
 	static ShadingProgram* _program;

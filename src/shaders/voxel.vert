@@ -15,7 +15,6 @@ out vec3 dir_v;
 out float dist_v;
 out vec2 uv_v;
 out vec3 color_v;
-
 out vec3 FragPos;
 out vec3 campos_v;
 
